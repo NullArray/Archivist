@@ -22,7 +22,7 @@ def hide():
     window = win32console.GetConsoleWindow()
     win32gui.ShowWindow(window,0)
     return True
-
+ 
 # Add to startup
 def addStartup():
     if getattr(sys, 'frozen', False):
