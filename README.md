@@ -1,6 +1,8 @@
 # Keylogger
 A python keylogger. 
 
+You'll need the pyHook and pythoncom modules for this to work.
+
 Adaptation of https://github.com/ajinabraham/Xenotix-Python-Keylogger simply change the variables:
 
 "SERVER, PORT, USER, PASS, FROM, TO" 
