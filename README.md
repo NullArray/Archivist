@@ -1,5 +1,5 @@
 # Keylogger
-A python keylogger. 
+A python keylogger that sends its logs to gmail. You'll need to allow less secure apps from the options in gmail to receive your logs.
 
 You'll need the pyHook and pythoncom modules for this to work.
 
