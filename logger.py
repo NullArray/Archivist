@@ -25,7 +25,7 @@ def hide():
  
 # Add to startup
 def addStartup():
-    if getattr(sys, 'frozen', False):
+	if getattr(sys, 'frozen', False):
 		fp = os.path.dirname(os.path.realpath(sys.executable))
 	elif __file__:
 		fp = os.path.dirname(os.path.realpath(__file__))
