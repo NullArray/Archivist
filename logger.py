@@ -14,7 +14,7 @@ mutex = win32event.CreateMutex(None, 1, 'mutex_var_xboz')
 if win32api.GetLastError() == winerror.ERROR_ALREADY_EXISTS:
     mutex = None
     exit(0)
-x=''
+x='' 
 data=''
 count=0
 
