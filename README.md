@@ -3,6 +3,8 @@ A python keylogger that sends its logs to gmail. You'll need to allow less secur
 
 You'll need the pyHook and pythoncom modules for this to work.
 
+# Usage
+
 To use it simply change the values of the following variables:
 
 ```
