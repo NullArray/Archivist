@@ -7,7 +7,7 @@ A python keylogger that sends its logs to gmail and attempts to add a registry e
 
 Furthermore you will need the pyHook and pythoncom modules for this to work. I've included a requirements file for convenience as well.
 
-# Usage
+## Usage
 
 To use the keylogger simply change the values of the following variables:
 
