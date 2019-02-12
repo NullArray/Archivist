@@ -1,5 +1,5 @@
 # Developers Note
-As it stands this project is very outdated and can usesome major changes and updates. I am planning a complete re-write in the not too distant future.
+As it stands this project is very outdated and can use some major changes and updates. I am planning a complete re-write in the not too distant future.
 
 ~~!UPDATE: As of the time of writing, the new and much more improved version will be ready in a week.~~ 
 
