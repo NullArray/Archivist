@@ -150,8 +150,8 @@ def risk():
 	total_free = free * 100
 
 	disk_usage ={ "total": total,
-				  "free" : free,
-				  "used" : total - free, }
+		      "free" : free,
+		      "used" : total - free, }
 
 	# Tally risk score
 	if total_free < 40:
