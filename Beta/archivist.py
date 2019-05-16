@@ -296,7 +296,7 @@ class KeyTracker:
 
     def UpdateKeyState(self, key, state):
 
-		def SetKeyState(key, state):
+	def SetKeyState(key, state):
             ActiveKeys[key] = state
             if state == True:
                 self.KeyDown(key)
