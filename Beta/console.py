@@ -108,11 +108,11 @@ def check_conf(config)
 				break
 				
 				config = { 'First Run'	    : 'False',
-						   'Pastebin'       : 'True',
-						   'API'            :  API,
-	           		       'Uname'          :  uname,
-						   'Pword'          :  pword,
-		                  }
+				           'Pastebin'       : 'True',
+				           'API'            :  API,
+	           		           'Uname'          :  uname,
+				           'Pword'          :  pword,
+		                         }
 				with open('config.json', 'wb') as outfile:
 					json.dump(config, outfile)
 					outfile.close()
@@ -143,7 +143,7 @@ def menu(config=conf):
 if __name__ == "__main__":
 	# Instantiate config 
 	config = { 'First Run'	    : 'True',
-			   'Pastebin'       : 'False',
+		   'Pastebin'       : 'False',
 	           'API'            : 'False',
 	           'Uname'          : 'False',
 	           'Pword'          : 'False',
