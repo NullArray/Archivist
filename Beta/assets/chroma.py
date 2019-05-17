@@ -18,7 +18,7 @@ def text(color, text=''):
     cyan    = "\x1b[33;36m" + text + "\x1b[39;49;00m"
     red     = "\x1b[31;01m" + text + "\x1b[39;49;00m"
     magenta = "\x1b[0;35m"  + text + "\x1b[39;49;00m"
-	blue    = "\x1b[34m"    + text + "\x1b[39;49;00m"
+    blue    = "\x1b[34m"    + text + "\x1b[39;49;00m"
     #-----------Add more colors below---------------#
 
     # COLOR = "[  ANSI   ]  + text + "\x1b[39;49;00m"
@@ -48,9 +48,9 @@ def text(color, text=''):
     elif color == 'red':
         return red
     elif color == 'magenta':
-		return magenta
-	elif color == 'blue':
-		return blue
+	return magenta
+    elif color == 'blue':
+	return blue
 
     elif color == 'green_bg':
         return green_bg
