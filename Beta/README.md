@@ -41,7 +41,7 @@ The directory structure is as follows.
     │       │   └── PerformanceMonitorVolatileEnvironmentLPE.vcxproj.filters
     │       ├── PerformanceMonitorVolatileEnvironmentLPE.sln
     │       └── README.md
-    ├── REAME.md
+    ├── README.md
     └── Scripts
         ├── helper.bat
         ├── README.md
