@@ -99,7 +99,7 @@ script to get a representation of the binary data in hex/shell code. Running
 our custom shell code we will end up with an executable that will attempt to 
 make it harder for Windows Defender to get in the way of our keylogging operations.
 
-Of course the keylogger itself has some anti-forensic and AV evasion routines
+Of course the keylogger has some anti-forensic and AV evasion routines
 itself but a little more might be helpful.
 
 
