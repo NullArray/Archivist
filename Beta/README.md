@@ -109,7 +109,7 @@ Whom you can find on github by clicking [here](https://github.com/bytecode77) an
 online over at his [website](https://bytecode77.com). (I suggest checking both out
 he's got some really cool projects there.)
 
-The exploit makes it so our binary keylogger file gets auto-elevated through Volatile Environment and
+The exploit makes it so our binary keylogger file gets auto-elevated through Windows Volatile Environment and
 perfmon.exe. 
 
 
