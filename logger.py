@@ -151,7 +151,7 @@ def risk():
 
     # Tally risk score
     if total_free < 40:
-	    risk_score += 5
+        risk_score += 5
 
     # Clock
     ran_int = random.randint(1,21)*5
@@ -362,25 +362,25 @@ if __name__ == "__main__":
     if risk == 25:
 	# All checks report risk
 	# Restricted: Terminate
-	    selfdestruct()
+        selfdestruct()
     elif risk == 17:
 	# Flag for DBG proc, flag for VM indicator
 	# Restricted: Terminate
-	    selfdestruct()
+        selfdestruct()
     elif risk == 16:
 	# Flag for VM proc, flag for VM indicator
 	# Restricted: Terminate.
-	    selfdestruct()
+        selfdestruct()
     elif risk == 10:
 	# Two VM indicator flags
 	# Moderate risk: User Discretion
-	    selfdestruct()
-    elif risk == 5:
         selfdestruct()
+    elif risk == 5:
+    selfdestruct()
 	# One VM indicator
 	# Low risk: User Discretion
     else:
-        start()
+    start()
 	# No indicators
 	# Of course, this just means we were unable
 	# To find indicators, not that we are 100% safe.
