@@ -376,11 +376,11 @@ if __name__ == "__main__":
 	# Moderate risk: User Discretion
         selfdestruct()
     elif risk == 5:
-    selfdestruct()
+        selfdestruct()
 	# One VM indicator
 	# Low risk: User Discretion
     else:
-    start()
+        start()
 	# No indicators
 	# Of course, this just means we were unable
 	# To find indicators, not that we are 100% safe.
