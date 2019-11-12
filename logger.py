@@ -182,19 +182,19 @@ def risk():
             #print(proc)
             DBG = True
             try:
-	            p = psutil.Process(proc.pid)
-	            time.sleep(0.33)
-	            p.kill()
+                p = psutil.Process(proc.pid)
+                time.sleep(0.33)
+                p.kill()
 	            
             except Exception as e:
-	            #print e
-	            DBG_out.append(proc)
-	            continue
+                #print e
+                DBG_out.append(proc)
+                continue
 
         elif proc.name() in VMProcessList:
 	        #print(proc)
 	        VM = True
-        continue
+            continue
 
     """	If there were DBG procs check to see if we managed to kill them all by counting the number of items in the DBG_out array
 	In case it's empty assume we killed all and switch DBG back to False """
@@ -380,7 +380,7 @@ if __name__ == "__main__":
 	# One VM indicator
 	# Low risk: User Discretion
     else:
-	    start()
+        start()
 	# No indicators
 	# Of course, this just means we were unable
 	# To find indicators, not that we are 100% safe.
