@@ -203,12 +203,13 @@ def risk():
         cnt += 1
         if not cnt < 1:
             DBG = False
-            if DBG and VM == True:
-            	risk_score += 15
-            elif DBG == True:
-                risk_score += 12
-            elif VM == True:
-                risk_score += 11
+        
+     if DBG and VM == True:
+         risk_score += 15
+     elif DBG == True:
+         risk_score += 12
+     elif VM == True:
+         risk_score += 11
     return risk_score
 
 """
